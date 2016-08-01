@@ -1,0 +1,30 @@
+{% extends './layout.html' %}
+{% block main %}
+</br>
+<form method='POST' action='/categories/{{category}}?method=DELETE'>
+<button class = 'btn btn-danger'>Delete Category</button>
+</form>
+
+<br/>
+  <form action="/categories/{{category}}/products" method="POST">
+    <label for="name_field">Add Product:</label>
+    <input name="name" value = "Add Product" type="text" id="name_field"/>
+    <input class='btn btn-primary' type="submit" value="Submit" />
+ </form>
+	{% if !products.length %}
+	<div class='well'>
+		No products to show
+	</div>
+	{% endif %}
+	<ul class='list-group'>
+		{% for idx, product in products %}
+			<li class='list-group-item'>
+				{{product.name}}
+				<br/>
+				<form method='POST' action='/categories/{{category}}/products/{{idx}}?method=DELETE''>
+				<button class = 'btn btn-warning'>Delete Product</button>
+				</form>
+			</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

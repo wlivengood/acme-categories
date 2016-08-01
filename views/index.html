@@ -1,0 +1,11 @@
+{% extends './layout.html' %}
+{% block main %}
+<h2>Welcome to Acme Categories</h2>
+<div class='well'>
+  <form action="/categories" method="POST">
+    <label for="name_field">Add Category:</label>
+    <input name="name" value = "Add Category" type="text" id="name_field"/>
+    <input class='btn btn-primary' type="submit" value="Submit" />
+ </form>
+</div>
+{% endblock main %}
