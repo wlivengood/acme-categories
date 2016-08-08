@@ -16,7 +16,10 @@ app.engine('html', swig.renderFile);
 app.use(routes);
 
 app.get('/', function(req, res) {
-	res.render('index', {title: "Home", categories: Db.listCategories()});
+	Db.query('SELECT * FROM categories', function(err, results){
+		if (err) next(err);
+	res.render('index', {title: "Home", categories: results.rows});	
+	});
 });
 
 app.listen(process.env.PORT, function() {

@@ -10,35 +10,51 @@ router.use(methodOverride('method'));
 
 router.post('/categories', function(req, res) {
 	var name = req.body.name;
-	Db.addCategory(name);
-	res.redirect('/');
+	Db.query('INSERT INTO categories (name) VALUES ($1)', [name], function(err, results) {
+		if (err) next (err);
+		res.redirect('/');
+	});
 });
 
-router.get('/categories/:category', function(req, res) {
-	var category = req.params.category;
-	var indexes = Db.getIndexes(category);
-	res.render('category', {title: category, category: category,
-		categories: Db.listCategories(), products: Db.getProducts(category), indexes: indexes});
+router.get('/categories/:categoryId', function(req, res) {
+	var categoryId = req.params.categoryId;
+	Db.query('SELECT * FROM products WHERE category_id= $1', [categoryId], function(err, results) {
+		if (err) throw err;
+		var products = results.rows;
+		Db.query('SELECT * FROM categories', function(err2, results2) {
+			if (err) throw err;
+			var categories = results2.rows;
+			res.render('category', {title: products.category_name, categoryId: categoryId, categories: categories, products: products});
+		});
+	});
 });
 
-router.post('/categories/:category/products', function(req, res) {
-	var category = req.params.category;
+router.post('/categories/:categoryId/products', function(req, res) {
+	var categoryId = req.params.categoryId;
 	var name = req.body.name;
-	Db.addProduct(category, name);
-	res.redirect('/categories/' + category);
+	Db.query('INSERT INTO products (name, category_id) VALUES ($1, $2)', [name, categoryId], function(err, results) {
+		if (err) throw err;
+		res.redirect('/categories/' + categoryId);
+	});
 });
 
-router.delete('/categories/:category', function(req, res) {
-	var category = req.params.category;
-	Db.deleteCategory(category);
-	res.redirect('/');
+router.delete('/categories/:categoryId', function(req, res) {
+	var categoryId = req.params.categoryId;
+	Db.query('DELETE FROM products WHERE category_id = $1', [categoryId], function(err, results) {
+		if (err) throw err;
+		Db.query('DELETE FROM categories WHERE id = $1', [categoryId], function(err, results) {
+			if (err) throw err;
+			res.redirect('/');
+		});
+	});
 });
 
-router.delete('/categories/:category/products/:idx', function(req, res) {
-	var category = req.params.category;
-	var idx = req.params.idx;
-	Db.deleteProduct(category, idx);
-	res.redirect('/categories/' + category);
+router.delete('/categories/:categoryId/products/:productId', function(req, res) {
+	var categoryId = req.params.categoryId;
+	var productId = req.params.productId;
+	Db.query('DELETE FROM products WHERE id = $1', [productId], function(err, results) {
+		res.redirect('/categories/' + categoryId);
+	});	
 })
 
 module.exports = router;
