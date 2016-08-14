@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>{{title}}</title>
-	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-	<ul class='nav nav-tabs'>
-	<li><a href='/'>Home</a></li>
-	{% for category in categories %}
-	<li><a href='/categories/{{category.id}}'>{{category.name}}</a></li>
-	{% endfor %}
-	</ul>
-	<div class='container'>
-	{% block main %}
-	Default Content
-	{% endblock main %}
-	</div>
-</body>
+  <head>
+    <title>{{title}}</title>
+    <!-- install bootstrap and set up static route -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <ul class='nav nav-tabs'>
+      <li>
+        <a href='/'>Home</a>
+      </li>
+      {% for category in categories %}
+        <!-- how about hilighting tab -->
+        <li><a href='/categories/{{category.id}}'>{{category.name}}</a></li>
+      {% endfor %}
+    </ul>
+    <div class='container'>
+      {% block main %}
+        Default Content
+      {% endblock main %}
+    </div>
+  </body>
 </html>
